@@ -1,0 +1,127 @@
+---
+description: Reown AppKit Development Rules & Type Hints
+globs: "**/*.{ts,tsx,js,jsx}"
+---
+
+# Reown AppKit Development Rules
+
+## Installation
+
+When installing Reown AppKit, ensure the following dependencies are present:
+
+```bash
+npm install @reown/appkit @reown/appkit-adapter-wagmi wagmi viem @tanstack/react-query
+```
+
+## Configuration
+
+### 1. Project ID
+Always use `NEXT_PUBLIC_PROJECT_ID` from environment variables.
+
+### 2. Context Provider
+Wrap the application in a `ContextProvider` that initializes the AppKit.
+
+```tsx
+// context/index.tsx
+'use client'
+
+import { wagmiAdapter, projectId } from '@/config'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { createAppKit } from '@reown/appkit/react'
+import { mainnet, arbitrum, base } from '@reown/appkit/networks'
+import React, { type ReactNode } from 'react'
+import { cookieToInitialState, WagmiProvider, type Config } from 'wagmi'
+
+const queryClient = new QueryClient()
+
+if (!projectId) {
+  throw new Error('Project ID is not defined')
+}
+
+const metadata = {
+  name: 'AppKit',
+  description: 'AppKit Example',
+  url: 'https://reown.com/appkit',
+  icons: ['https://assets.reown.com/reown-profile-pic.png']
+}
+
+const modal = createAppKit({
+  adapters: [wagmiAdapter],
+  projectId,
+  networks: [mainnet, arbitrum, base],
+  defaultNetwork: mainnet,
+  metadata: metadata,
+  features: {
+    analytics: true
+  }
+})
+
+function ContextProvider({ children, cookies }: { children: ReactNode; cookies: string | null }) {
+  const initialState = cookieToInitialState(wagmiAdapter.wagmiConfig as Config, cookies)
+
+  return (
+    <WagmiProvider config={wagmiAdapter.wagmiConfig as Config} initialState={initialState}>
+      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    </WagmiProvider>
+  )
+}
+
+export default ContextProvider
+```
+
+### 3. Config File
+Setup `config/index.tsx` for the Wagmi Adapter.
+
+```tsx
+// config/index.tsx
+import { cookieStorage, createStorage, http } from '@wagmi/core'
+import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
+import { mainnet, arbitrum, base } from '@reown/appkit/networks'
+
+export const projectId = process.env.NEXT_PUBLIC_PROJECT_ID
+
+if (!projectId) {
+  throw new Error('Project ID is not defined')
+}
+
+export const networks = [mainnet, arbitrum, base]
+
+export const wagmiAdapter = new WagmiAdapter({
+  storage: createStorage({
+    storage: cookieStorage
+  }),
+  ssr: true,
+  projectId,
+  networks
+})
+
+export const config = wagmiAdapter.wagmiConfig
+```
+
+## Usage
+
+### Hooks
+Use `useAppKit` for modal control and `useAppKitAccount` for account state.
+
+```tsx
+import { useAppKit, useAppKitAccount } from '@reown/appkit/react'
+
+export default function ConnectButton() {
+  const { open } = useAppKit()
+  const { address, isConnected } = useAppKitAccount()
+
+  return (
+    <button onClick={() => open()}>
+      {isConnected ? 'Disconnect' : 'Connect Wallet'}
+    </button>
+  )
+}
+```
+
+### Custom Buttons
+You can use `<appkit-button />` web component or build custom UI with hooks.
+
+## Best Practices
+- Always handle SSR with `cookieToInitialState`.
+- Use `wagmi` hooks for blockchain interactions (`useBalance`, `useReadContract`, etc.).
+- Ensure `NEXT_PUBLIC_PROJECT_ID` is set in `.env`.

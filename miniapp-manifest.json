@@ -1,0 +1,11 @@
+{
+    "name": "Live Market",
+    "slug": "live-market",
+    "description": "Farcaster mini app showing live crypto markets, wallet, daily check-ins and Neynar profile.",
+    "iconUrl": "/icon.png",
+    "startUrl": "/dashboard",
+    "permissions": [
+        "wallet",
+        "profile"
+    ]
+}

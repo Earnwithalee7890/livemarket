@@ -1,0 +1,128 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 15, 23, 42;
+  --background-start-rgb: 248, 250, 252;
+  --background-end-rgb: 255, 255, 255;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 11, 11, 14;
+    /* #0B0B0E */
+    --background-end-rgb: 12, 12, 15;
+  }
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))) rgb(var(--background-start-rgb));
+  min-height: 100vh;
+  font-family: "SF Pro Display", "Inter", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(156, 163, 175, 0.5);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(156, 163, 175, 0.8);
+}
+
+/* Utilities */
+.glass-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.07);
+}
+
+.dark .glass-card {
+  background: rgba(30, 30, 35, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+}
+
+.gradient-text {
+  background: linear-gradient(to right, #00C6FB, #3A47D5);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* ----------------------------------------------- */
+/*  RESPONSIVE FIXES FOR DESKTOP/MOBILE */
+/* ----------------------------------------------- */
+
+/* Universal smoothing */
+body {
+  -webkit-font-smoothing: antialiased;
+  font-family: system-ui, sans-serif;
+}
+
+/* Max width container for desktop */
+.responsive-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+/* Increase desktop touch targets */
+@media (min-width: 768px) {
+  .ag-nav-button {
+    width: 48px !important;
+    height: 48px !important;
+  }
+
+  .ag-icon {
+    width: 28px !important;
+    height: 28px !important;
+  }
+
+  .ag-card {
+    padding: 24px !important;
+  }
+
+  .ag-button {
+    padding: 14px 22px !important;
+    font-size: 18px !important;
+  }
+}
+
+/* Mobile smaller adjustments */
+@media (max-width: 767px) {
+  .ag-card {
+    padding: 14px !important;
+  }
+
+  .ag-button {
+    padding: 12px 18px !important;
+    font-size: 16px !important;
+  }
+}
